@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import md5 from 'md5';
+import sha256 from 'sha256';
 import jwt from 'jsonwebtoken';
 
 import type { LoginRequest } from '../../types/LoginRequest';
@@ -30,7 +30,7 @@ const login = async (
     
     const user = await UserModel.findOne({
       email: body.login,
-      password: md5(body.password),
+      password: sha256(body.password),
     })
   
     if (!user) 

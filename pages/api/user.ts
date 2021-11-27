@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import md5 from 'md5';
+import sha256 from 'sha256';
 
 import type { UserRequest } from '../../types/UserRequest';
 import type { DefaultResponseMsg } from '../../types/DefaultResponseMsg';
@@ -35,7 +35,7 @@ const user = async (
     const user = {
       name,
       email,
-      password: md5(password)
+      password: sha256(password)
     }
 
    
