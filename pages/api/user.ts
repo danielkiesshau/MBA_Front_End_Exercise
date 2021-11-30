@@ -6,7 +6,7 @@ import type { DefaultResponseMsg } from '../../types/DefaultResponseMsg';
 import { connectDb } from '../../middlewares/connectDb';
 import { UserModel } from '../../models/UserModel';
 
-const user = async (
+const userApi = async (
   req: NextApiRequest, 
   res: NextApiResponse<DefaultResponseMsg>
 ) => {
@@ -39,11 +39,11 @@ const user = async (
     }
 
    
-    const user = await UserModel.findOne({
+    const isUserCreated = await UserModel.findOne({
       email
     })
 
-    if (user) 
+    if (isUserCreated) 
       return res.status(400).json({ error: 'Já existe um usuário com o email informado' })
 
     await UserModel.create(user);
@@ -55,4 +55,4 @@ const user = async (
   return res.status(405).json({ error: 'Método informado não é válido' })
 }
 
-export default connectDb(user)
+export default connectDb(userApi)
