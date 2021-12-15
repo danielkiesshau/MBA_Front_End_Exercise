@@ -32,6 +32,8 @@ body {
 @import './login.scss';
 @import './header.scss';
 @import './footer.scss';
+@import './filter.scss';
+@import './list.scss';
 
 button {
     padding: 15px;
@@ -39,4 +41,54 @@ button {
     border-radius: 12px;
     color: white;
     border: none;
+}
+
+input, select {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    letter-spacing: 0.01em;
+    color: $primaryColor;
+    min-width: 180px;
+    background-color: transparent;
+    font-family: 'Biennale Regular';
+
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0.01em;
+    border-color: $mediumGreyColor;
+
+    outline: none;
+
+    cursor: pointer;
+
+    &:focus {
+        border-color: $primaryColor;
+    }
+
+    &::placeholder {
+        color: $mediumGreyColor;
+        opacity: 1;
+    }
+
+    &:-ms-input-placeholder {
+        color: $mediumGreyColor;
+    }
+
+    &::-ms-input-placeholder {
+        color: $mediumGreyColor;
+    }
+}
+
+@media screen and (min-width:1024px) {
+    input, select {
+        border-top-width: 1px;
+        border-left-width: 1px;
+        border-right-width: 1px;
+        border-bottom-width: 1px;
+        border-radius: 8px;
+        padding: 5px;
+        outline: none;
+    }
 }
