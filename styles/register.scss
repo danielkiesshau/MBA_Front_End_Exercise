@@ -1,7 +1,8 @@
 @import './config.scss';
 
-.container-login  {
+.container-register  {
     .logo{
+        cursor: pointer;
         width: 178.35px;
         height: 48px;
         display: block;
@@ -65,11 +66,6 @@
         button {
             width: 100%;
             margin-top: 35px;
-        }
-
-        .button-register {
-            background-color: $lightGreyColorB;
-            margin-top: 24px;
         }
     }
 

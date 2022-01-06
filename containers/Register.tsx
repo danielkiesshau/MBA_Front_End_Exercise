@@ -1,28 +1,29 @@
 import { NextPage } from "next";
 import { useState } from "react"
-import Link from 'next/link'
 import { executeRequest } from "../services/api";
 import { LoginResponse } from "../types/LoginResponse";
 
-type LoginProps = {
+type RegisterProps = {
     setToken(s: string) : void
     setIsRegistering(flag: boolean) : void
 }
 
 
-const isFormValid = (login: string, password: string): boolean => {
-    if (!login || !password) return false;
+const isFormValid = (email: string, password: string, name: string): boolean => {
+    if (!email || !password || !name) return false;
     return true;
 }
 
-export const Login : NextPage<LoginProps> = ({setToken, setIsRegistering}) => {
+export const Register : NextPage<RegisterProps> = ({setToken, setIsRegistering}) => {
 
-    const [login, setLogin] = useState('');
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [msgError, setError] = useState('');
+    const [msgSuccess, setSuccess] = useState('');
 
     const validateForm = () => {
-        if (isFormValid(login,password)) {
+        if (isFormValid(email,password, name)) {
             setError('favor preencher os dados');
             return;
         }
@@ -35,22 +36,31 @@ export const Login : NextPage<LoginProps> = ({setToken, setIsRegistering}) => {
             return;
         }
         console.log(e);
-        setError('Ocorreu erro ao efetuar login, tente novamenete');
+        setError('Ocorreu erro ao efetuar o registro, tente novamenete');
     }
 
-    const doLogin = async () => {
+    const doRegister = async () => {
         try {
             validateForm();
 
             setError('');
 
             const body = {
-                login,
+                name,
+                email,
+                password,
+            };
+
+            await executeRequest('user', 'POST', body);
+
+            const loginBody = {
+                login: email,
                 password
             };
 
-            const result = await executeRequest('login', 'POST', body);
+            const result = await executeRequest('login', 'POST', loginBody);
             if(result && result.data){
+                setIsRegistering(false);
                 const loginResponse = result.data as LoginResponse;
                 localStorage.setItem('accessToken', loginResponse.token);
                 localStorage.setItem('userName', loginResponse.name);
@@ -63,25 +73,28 @@ export const Login : NextPage<LoginProps> = ({setToken, setIsRegistering}) => {
     }
 
     return (
-        <div className="container-login">
-            <img src="/logo.svg" alt="Logo Fiap" className="logo" />
+        <div className="container-register">
+            <img src="/logo.svg" alt="Logo Fiap" className="logo" onClick={() => setIsRegistering(false)} />
             <div className="form">
                 {msgError && <p>{msgError}</p>}
+                {msgSuccess && <p className="message-success">{msgSuccess}</p>}
+                <div className="input">
+                    <img src="/user.svg" alt="Informe seu nome" />
+                    <input type="text" placeholder="Informe seu nome"
+                        value={name} onChange={evento => setName(evento.target.value)} />
+                </div>
                 <div className="input">
                     <img src="/mail.svg" alt="Informe seu email" />
                     <input type="text" placeholder="Informe seu email"
-                        value={login} onChange={evento => setLogin(evento.target.value)} />
+                        value={email} onChange={evento => setEmail(evento.target.value)} />
                 </div>
                 <div className="input">
                     <img src="/lock.svg" alt="Informe sua senha" />
                     <input type="password" placeholder="Informe sua senha"
                         value={password} onChange={evento => setPassword(evento.target.value)} />
                 </div>
-                <button onClick={doLogin}>Login</button>
-                <button onClick={() => {
-                    setIsRegistering(true);
-                }} className="button-register">Registrar</button>
+                <button onClick={doRegister}>Registrar</button>
             </div>
-        </div>
+    </div>
     )
 }

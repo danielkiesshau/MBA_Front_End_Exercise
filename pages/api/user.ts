@@ -20,7 +20,7 @@ const userApi = async (
     const isEmptyRequest = !email || !name || !password;
     
     if (isEmptyRequest)
-      return res.status(400).json({ error: 'Requisição inválida' })
+      return res.status(400).json({ error: 'Favor informar email e senha' })
     
     const minNameLength = name.length <= 2;
 
