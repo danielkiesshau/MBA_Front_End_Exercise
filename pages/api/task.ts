@@ -101,10 +101,6 @@ const deleteTask = async (req: NextApiRequest, res: NextApiResponse, userId: str
   if(!task || task.userId !== userId)
     return res.status(400).json({ error: 'Tarefa não encontrada' });
 
-  const errorMsg = validateBody(body, userId);
-  if(errorMsg)
-    return res.status(400).json({ error: errorMsg });
-
   await TaskModel.findByIdAndDelete({ _id: task._id });
   return res.status(200).json({ msg: 'Tarefa deletada' });
 }

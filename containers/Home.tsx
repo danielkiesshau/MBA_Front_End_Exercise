@@ -7,13 +7,14 @@ import { Header } from "../components/Header";
 import { List } from "../components/List";
 import { executeRequest } from "../services/api";
 import { Task } from "../types/Task";
-
+import {CrudModal} from '../components/Modal';
 type HomeProps = {
     setToken(s: string) : void
 }
 
 export const Home : NextPage<HomeProps> = ({setToken}) => {
 
+    // state Filter
     const [previsionDateStart, setPrevisionDateStart] = useState('');
     const [previsionDateEnd, setPrevisionDateEnd] = useState('');
     const [status, setStatus] = useState('0');
@@ -50,9 +51,49 @@ export const Home : NextPage<HomeProps> = ({setToken}) => {
         getFilteredList();
     }, [status, previsionDateStart, previsionDateEnd]);
 
+
+    // state Modal
+    const [showModal, setShowModal] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [name, setName] = useState('');
+    const [previsionDate, setPrevisionDate] = useState('');
+
+    const closeModal = () => {
+        setShowModal(false);
+        setErrorMsg('');
+        setName('');
+        setPrevisionDate('');
+    }
+    
+    const doSave = async () => {
+        try{
+            if(!name || !previsionDate){
+                setErrorMsg('Favor preencher nome e data de previsão');
+                return;
+            }
+
+            const body = {
+                name,
+                previsionDate
+            }
+
+            await executeRequest('task', 'POST', body);
+            await getFilteredList();
+            closeModal();
+        }catch(e){
+            if(e?.response?.data?.error){
+                console.log(e?.response);
+                setErrorMsg(e?.response?.data?.error);
+                return;
+            }
+            console.log(e);
+            setErrorMsg('Ocorreu erro ao cadastrar tarefa, tente novamenete');
+        }
+    }
+
     return (
     <>
-        <Header sair={sair}/>
+        <Header sair={sair} showModal={() => setShowModal(true)}/>
         <Filter 
             previsionDateStart={previsionDateStart}
             previsionDateEnd={previsionDateEnd}
@@ -61,7 +102,17 @@ export const Home : NextPage<HomeProps> = ({setToken}) => {
             setPrevisionDateEnd={setPrevisionDateEnd}
             setStatus={setStatus}
         />
-        <List tasks={tasks}/>
-        <Footer />
+        <List tasks={tasks} getFilteredList={getFilteredList}/>
+        <Footer showModal={() => setShowModal(true)}/>
+        <CrudModal 
+            showModal={showModal}
+            errorMsg={errorMsg}
+            name={name}
+            setName={setName}
+            previsionDate={previsionDate}
+            setPrevisionDate={setPrevisionDate}
+            closeModal={closeModal}
+            doSave={doSave}
+        />
     </>);
 }
