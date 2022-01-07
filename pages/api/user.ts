@@ -27,7 +27,7 @@ const userApi = async (
     if (minNameLength)
       return res.status(400).json({ error: 'O name precisa ter pelo menos 2 caracteres' })
 
-    const minPasswordLength = name.length < 4;
+    const minPasswordLength = password.length < 4;
 
     if (minPasswordLength)
       return res.status(400).json({ error: 'A senha precisa ter pelo menos 4 caracteres' })

@@ -1,12 +1,11 @@
 import { NextPage } from "next";
 import { useState } from "react"
-import Link from 'next/link'
-import { executeRequest } from "../services/api";
-import { LoginResponse } from "../types/LoginResponse";
+import { useRouter } from 'next/router'
+import { executeRequest } from "../../services/api";
+import { LoginResponse } from "../../types/LoginResponse";
 
 type LoginProps = {
     setToken(s: string) : void
-    setIsRegistering(flag: boolean) : void
 }
 
 
@@ -15,7 +14,8 @@ const isFormValid = (login: string, password: string): boolean => {
     return true;
 }
 
-export const Login : NextPage<LoginProps> = ({setToken, setIsRegistering}) => {
+export const Login : NextPage<LoginProps> = ({setToken}) => {
+    const router = useRouter()
 
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -79,9 +79,11 @@ export const Login : NextPage<LoginProps> = ({setToken, setIsRegistering}) => {
                 </div>
                 <button onClick={doLogin}>Login</button>
                 <button onClick={() => {
-                    setIsRegistering(true);
+                    router.push('/containers/Register');
                 }} className="button-register">Registrar</button>
             </div>
         </div>
     )
 }
+
+export default Login;

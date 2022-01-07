@@ -1,13 +1,14 @@
 import { NextPage } from "next";
-import { useEffect } from "react";
+    import { useEffect } from "react";
 import { useState } from "react";
-import { Filter } from "../components/Filter";
-import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
-import { List } from "../components/List";
-import { executeRequest } from "../services/api";
-import { Task } from "../types/Task";
-import {CrudModal} from '../components/Modal';
+import { Filter } from "../../components/Filter";
+import { Footer } from "../../components/Footer";
+import { Header } from "../../components/Header";
+import { List } from "../../components/List";
+import { executeRequest } from "../../services/api";
+import { Task } from "../../types/Task";
+import {CrudModal} from '../../components/Modal';
+
 type HomeProps = {
     setToken(s: string) : void
 }
@@ -80,7 +81,7 @@ export const Home : NextPage<HomeProps> = ({setToken}) => {
             await executeRequest('task', 'POST', body);
             await getFilteredList();
             closeModal();
-        }catch(e){
+        }catch(e: any){
             if(e?.response?.data?.error){
                 console.log(e?.response);
                 setErrorMsg(e?.response?.data?.error);
@@ -116,3 +117,5 @@ export const Home : NextPage<HomeProps> = ({setToken}) => {
         />
     </>);
 }
+
+export default Home

@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { useState } from "react"
-import { executeRequest } from "../services/api";
-import { LoginResponse } from "../types/LoginResponse";
+import { useRouter } from 'next/router'
+import { executeRequest } from "../../services/api";
+import { LoginResponse } from "../../types/LoginResponse";
 
 type RegisterProps = {
     setToken(s: string) : void
-    setIsRegistering(flag: boolean) : void
 }
 
 
@@ -14,7 +14,8 @@ const isFormValid = (email: string, password: string, name: string): boolean => 
     return true;
 }
 
-export const Register : NextPage<RegisterProps> = ({setToken, setIsRegistering}) => {
+export const Register : NextPage<RegisterProps> = ({setToken}) => {
+    const router = useRouter()
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -60,21 +61,26 @@ export const Register : NextPage<RegisterProps> = ({setToken, setIsRegistering})
 
             const result = await executeRequest('login', 'POST', loginBody);
             if(result && result.data){
-                setIsRegistering(false);
                 const loginResponse = result.data as LoginResponse;
                 localStorage.setItem('accessToken', loginResponse.token);
                 localStorage.setItem('userName', loginResponse.name);
                 localStorage.setItem('userEmail', loginResponse.email);
-                setToken(loginResponse.token);
             }
+
+            router.back();
         } catch (e : any) {
+            console.log(e)
             setAPIError(e);
         }
     }
 
+    const onClickLogo = () => {
+        router.back();
+    }
+
     return (
         <div className="container-register">
-            <img src="/logo.svg" alt="Logo Fiap" className="logo" onClick={() => setIsRegistering(false)} />
+            <img src="/logo.svg" alt="Logo Fiap" className="logo" onClick={onClickLogo} />
             <div className="form">
                 {msgError && <p>{msgError}</p>}
                 {msgSuccess && <p className="message-success">{msgSuccess}</p>}
@@ -98,3 +104,5 @@ export const Register : NextPage<RegisterProps> = ({setToken, setIsRegistering})
     </div>
     )
 }
+
+export default Register;
